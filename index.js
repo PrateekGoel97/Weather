@@ -10,10 +10,14 @@ const weatherData = require('./utils/weatherData');
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname,'views'));
 
+app.use(express.static('assets'));
+
 
 app.get('/',function(req,res){
 
-return res.render('home');
+    return res.render('home',{
+        title: "Weather App"
+    });
 
 });
 
@@ -28,13 +32,13 @@ app.get('/weather', function(req,res){
         })
     }
 
-    weatherData(address, function(error, {temperature,description,cityName}){
+    weatherData(address, function(error, {temperature,description,cityName} = {}){
        
         if(error){
-            console.log("error",error);
-            return;
-        }
-
+            return res.send({
+                error
+            })
+        }   
         res.send({
             temperature,
             description,
@@ -45,8 +49,12 @@ app.get('/weather', function(req,res){
 
 });
 
-app.listen(port, function(err){
+app.get('*', function(req,res){
+    return res.send("<h1> Page not found </h1>");
 
+});
+
+app.listen(port, function(err){
     if(err){
         console.log("error",err);
         return;

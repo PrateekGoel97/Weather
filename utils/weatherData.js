@@ -11,9 +11,12 @@ const weatherData = function(address,callback){
         // console.log(body.body.main);
 
         if(error){
-            console.log('Cannot fetch data from openweather api',undefined);
-            return;
-        }
+            callback('Cannot fetch data, try another location ',undefined);
+        }else
+            if(!res.body.main || !res.body.main.temp || !res.body.name || !res.body.weather){
+                        callback("Unable to find require data, try another location",undefined);
+                        return;
+            }
 
         callback(undefined,{
             temperature: res.body.main.temp,
